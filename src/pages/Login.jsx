@@ -65,15 +65,6 @@ export default function Login() {
     }
   };
 
-  const handleForgotPassword = () => {
-    if (!email) {
-      triggerShake('Please enter your email above to receive a reset link.');
-      return;
-    }
-    setError('');
-    setInfoMessage(`Password reset instructions have been sent to ${email}`);
-  };
-
   return (
     <div className="login-page-container">
       {/* Decorative organic background gradient blobs */}
@@ -191,13 +182,12 @@ export default function Login() {
               <Link to="/signup" className="login-link">
                 Don't have an account? Sign up
               </Link>
-              <button
-                type="button"
+              <Link
+                to={email ? `/forgot-password?email=${encodeURIComponent(email)}` : '/forgot-password'}
                 className="login-link"
-                onClick={handleForgotPassword}
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             <div className="login-guest-divider">

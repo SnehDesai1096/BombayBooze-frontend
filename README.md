@@ -11,13 +11,16 @@ BombayBooze is a modern, high-end, luxury alcohol delivery web application desig
 * **Route & Initial Trigger:** Automatically displays during initial page load and route transitions.
 * **Theme Adaptable:** Seamlessly transitions between **Dark Luxury Gold**, **Light Mode**, and fallback themes based on active site settings.
 
-### 2. 🔐 Locked Dark Luxury Login & Registration Page
+### 2. 🔐 Locked Dark Luxury Auth Suite (`Login`, `Signup`, `ForgotPassword`, `ResetPassword`)
 * **Aesthetic Design:** Deep obsidian background (`#0a0a0a`) with an atmospheric ambient gold radial glow and animated floating gold ember blobs.
-* **Authentication Modes:** Toggle between **Sign In** and **Create Account** modes.
-* **FastAPI Backend Integration:** Connected to `/api/auth/signup` and `/api/auth/login` with JWT bearer token storage and `/api/auth/me` user profile sync.
+* **Authentication Suite:**
+  - **Sign In (`/login`):** JWT bearer authentication against `POST /api/auth/login`.
+  - **Account Registration (`/signup`):** Age-verified registration against `POST /api/auth/signup`.
+  - **Forgot Password (`/forgot-password`):** Secure reset link generation against `POST /api/auth/forgot-password` with 30-minute token validity and Mailpit integration.
+  - **Reset Password (`/reset-password`):** Token validation and password renewal against `POST /api/auth/reset-password`.
 * **Compliance Integration:** Mandatory 21+ age verification checkbox for account creation and date of birth validation.
 * **Interactive UI:** Password visibility toggle (Show/Hide), error validation banners, password reset prompt, and guest browsing link (`Browse collection as guest →`).
-* **Theme Locking:** Enforces the "Dark Luxury Gold" theme on the auth page regardless of the global light/dark toggle state.
+* **Theme Locking:** Enforces the "Dark Luxury Gold" theme on all auth pages regardless of the global light/dark toggle state.
 
 ### 3. 🍾 Revamped Storefront & Live Catalog (`Home.jsx`)
 * **Top Promo Ribbon:** Slim announcement bar highlighting express 30-minute delivery in Mumbai, free shipping thresholds, and 21+ verification.
@@ -83,11 +86,13 @@ AlcoholDelivery_Customer/
 │   │   └── mockData.js         # Fallback Mock Catalog & Categories
 │   ├── pages/                  # Page Components
 │   │   ├── Checkout.jsx        # Cart & Order Checkout Page
+│   │   ├── ForgotPassword.jsx  # Forgot Password Request Page
 │   │   ├── Home.jsx            # Store Front & Live Catalog Page
 │   │   ├── Login.jsx           # Dark Luxury Login Page
+│   │   ├── ResetPassword.jsx   # Reset Password Token Action Page
 │   │   └── Signup.jsx          # User Registration Page
 │   ├── services/               # API Integration Services
-│   │   ├── authService.js      # Backend Auth Service (Signup, Login, Me)
+│   │   ├── authService.js      # Backend Auth Service (Signup, Login, Me, Forgot & Reset Password)
 │   │   └── catalogService.js   # Backend Catalog Service (Categories & Products)
 │   ├── styles/                 # Consolidated CSS Stylesheets
 │   │   ├── App.css             # Supplementary Styles

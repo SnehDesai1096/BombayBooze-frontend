@@ -197,9 +197,131 @@ export async function getMe(token) {
   return data; // { user_id, first_name, last_name, email, is_verified }
 }
 
+/**
+ * Request a password reset link for the provided email
+ * @param {Object} params - { email }
+ * @returns {Promise<{ message: string }>}
+ */
+export async function forgotPassword({ email }) {
+  if (!email || !email.includes('@')) {
+    throw new Error('Please enter a valid email address.');
+  }
+
+  const payload = {
+    email: email.trim().toLowerCase(),
+  };
+
+  let response;
+  let data;
+
+  try {
+    response = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    data = await response.json().catch(() => null);
+  } catch (netErr) {
+    if (!API_BASE) {
+      try {
+        response = await fetch('http://localhost:8000/api/auth/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        data = await response.json().catch(() => null);
+      } catch (fallbackErr) {
+        throw new Error('Unable to connect to server. Please verify the backend API is running.');
+      }
+    } else {
+      throw new Error('Unable to connect to server. Please check your network connection.');
+    }
+  }
+
+  if (!response.ok) {
+    const message = parseApiError(data, 'Failed to request password reset. Please try again.');
+    const error = new Error(message);
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data; // { message: string }
+}
+
+/**
+ * Reset password using a valid reset token
+ * @param {Object} params - { token, newPassword }
+ * @returns {Promise<{ message: string }>}
+ */
+export async function resetPassword({ token, newPassword }) {
+  if (!token) {
+    throw new Error('Reset token is missing or invalid.');
+  }
+  if (!newPassword || newPassword.length < 8) {
+    throw new Error('Password must be at least 8 characters long.');
+  }
+
+  const payload = {
+    token: token.trim(),
+    new_password: newPassword,
+  };
+
+  let response;
+  let data;
+
+  try {
+    response = await fetch(`${API_BASE}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    data = await response.json().catch(() => null);
+  } catch (netErr) {
+    if (!API_BASE) {
+      try {
+        response = await fetch('http://localhost:8000/api/auth/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        data = await response.json().catch(() => null);
+      } catch (fallbackErr) {
+        throw new Error('Unable to connect to server. Please verify the backend API is running.');
+      }
+    } else {
+      throw new Error('Unable to connect to server. Please check your network connection.');
+    }
+  }
+
+  if (!response.ok) {
+    const message = parseApiError(data, 'Invalid or expired reset link.');
+    const error = new Error(message);
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data; // { message: string }
+}
+
 export default {
   signup,
   login,
   getMe,
+  forgotPassword,
+  resetPassword,
   parseApiError,
 };

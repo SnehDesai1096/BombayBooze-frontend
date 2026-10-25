@@ -7,13 +7,17 @@ import Home from './pages/Home';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const location = useLocation();
   const isAuthPage = 
     location.pathname === '/' || 
     location.pathname === '/login' || 
-    location.pathname === '/signup';
+    location.pathname === '/signup' ||
+    location.pathname === '/forgot-password' ||
+    location.pathname === '/reset-password';
 
   return (
     <div className="app-wrapper">
@@ -25,6 +29,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/store" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/checkout" element={<Checkout />} />
